@@ -10,7 +10,7 @@ def cli(exercise: str) -> None:
     day = day.zfill(2)
     module = import_module(f"advent.day{day}", "advent")
     fn = getattr(module, f"part{part}")
-    infile = files("advent.inputs").joinpath(f"{day}-{part}.txt")
+    infile = files("advent.inputs").joinpath(f"{day}.txt")
     result = fn(infile.read_text())
     click.echo(result)
 

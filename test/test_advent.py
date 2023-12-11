@@ -1,6 +1,10 @@
 import pytest
 from typing import Callable
-from advent import day01, day02
+from textwrap import dedent
+from advent import day01, day02, day03
+
+Exercise = Callable[[str], int]
+PerLineExpect = list[tuple[str, int]]
 
 @pytest.mark.parametrize(["exercise_fn", "lines"], [
     (day01.part1, [
@@ -31,14 +35,45 @@ from advent import day01, day02
         ("Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red", 1560),
         ("Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red", 630),
         ("Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green", 36),
-    ])
+    ]),
 ], ids=lambda x: f"{x.__module__}.{x.__name__}" if hasattr(x, "__module__") else "")
 class TestLineSumExercises:
-    def test_line_by_line(self, exercise_fn: Callable[[str], int], lines: list[tuple[str, int]]):
+    def test_line_by_line(self, exercise_fn: Exercise, lines: PerLineExpect):
         for line, expected in lines:
             assert exercise_fn(line) == expected
 
-    def test_sample(self, exercise_fn: Callable[[str], int], lines: list[tuple[str, int]]):
+    def test_sample(self, exercise_fn: Exercise, lines: PerLineExpect):
         inputs = "\n".join(x[0] for x in lines)
         expected = sum(x[1] for x in lines)
         assert exercise_fn(inputs) == expected
+
+
+@pytest.mark.parametrize(["exercise_fn", "expected", "inputs"], [
+    (day03.part1, 4361, """
+        467..114..
+        ...*......
+        ..35..633.
+        ......#...
+        617*......
+        .....+.58.
+        ..592.....
+        ......755.
+        ...$.*....
+        .664.598..
+    """),
+    (day03.part2, 467835, """
+        467..114..
+        ...*......
+        ..35..633.
+        ......#...
+        617*......
+        .....+.58.
+        ..592.....
+        ......755.
+        ...$.*....
+        .664.598..
+    """),
+], ids=lambda x: f"{x.__module__}.{x.__name__}" if hasattr(x, "__module__") else "")
+class TestFullStringExercises:
+    def test_sample(self, exercise_fn: Exercise, expected: int, inputs: str):
+        assert exercise_fn(dedent(inputs).strip()) == expected
